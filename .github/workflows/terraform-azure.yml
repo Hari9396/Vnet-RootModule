@@ -1,34 +1,36 @@
-name: 'Terraform Deploy - Azure VNet Module'
+name: Terraform Azure Deployment
 
 on:
   push:
     branches:
-      - main  # Or your working branch
-
-permissions:
-  id-token: write
-  contents: read
+      - main
+  pull_request:
 
 jobs:
   terraform:
+    name: 'Terraform Apply'
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-      - name: Setup Terraform
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.8.4
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          terraform_version: 1.7.5
 
       - name: Terraform Init
         run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt -check
 
       - name: Terraform Validate
         run: terraform validate
