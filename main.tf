@@ -1,5 +1,5 @@
 module "networking" {
-  source              = "git::https://github.com/Hari9396/Vnet-ChildModule.git//modules/vnet"
+  source              = "git::https://github.com/Hari9396/Vnet-ChildModule.git"
   resource_group_name = var.resource_group_name
   location            = var.location
   vnet_name           = var.vnet_name
